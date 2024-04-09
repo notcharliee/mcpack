@@ -55,14 +55,12 @@ const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>
 
 const uriToFile = (uri: string) => {
-  let arr = uri.split(","),
-    mime = arr[0]?.match(/:(.*?);/)?.[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n)
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n)
-  }
+  const arr = uri.split(",")
+  const mime = arr[0]?.match(/:(.*?);/)?.[1]
+  const bstr = atob(arr[1])
+  let n = bstr.length
+  const u8arr = new Uint8Array(n)
+  while (n--) u8arr[n] = bstr.charCodeAt(n)
   return new File([new Blob([u8arr], { type: mime })], "pack_icon")
 }
 
@@ -191,7 +189,7 @@ export default function App() {
                               type="file"
                               accept="image/png,image/jpeg,image/gif,image/svg+xml"
                               onChange={(event) => {
-                                const file = event.target?.files?.[0]!
+                                const file = event.target!.files![0]
 
                                 new Promise(
                                   (resolve: (value: string) => void) => {
@@ -214,7 +212,7 @@ export default function App() {
                                         resolve(canvas.toDataURL())
                                       }
 
-                                      img.src = data.target?.result?.toString()!
+                                      img.src = data.target!.result!.toString()
                                     }
 
                                     fileReader.readAsDataURL(file)

@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  @font-face {
+    font-family: "MinecraftSeven";
+    src: url("https://raw.githubusercontent.com/Mojang/web-theme-bootstrap/main/assets/fonts/Minecraft-Seven_v2.woff")
+      format("woff");
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+  }
+  
+  @font-face {
+    font-family: "MinecraftTen";
+    src: url("https://raw.githubusercontent.com/Mojang/web-theme-bootstrap/main/assets/fonts/Minecraft-Tenv2.woff2")
+      format("woff2");
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+  }
+}

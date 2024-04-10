@@ -2,15 +2,10 @@ import "~/styles/globals.css"
 
 import pack_icon from "~/assets/pack_icon.ts"
 import edit_icon from "~/assets/edit_icon.png"
-import particles from "~/assets/particles.png"
-import bee from "~/assets/bee.png"
-
-import pollinate1 from "~/assets/audio/pollinate1.ogg"
-import pollinate2 from "~/assets/audio/pollinate2.ogg"
 import bass from "~/assets/audio/bass.ogg"
 import pop from "~/assets/audio/pop.ogg"
 
-import { useForm } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
 import { useState } from "react"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -18,7 +13,7 @@ import { z } from "zod"
 import { v4 as randomUUID } from "uuid"
 import JSZip from "jszip"
 
-import { Button } from "~/components/button"
+import { Button } from "~/components/ui/button"
 import {
   Card,
   CardHeader,
@@ -26,7 +21,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "~/components/card"
+} from "~/components/ui/card"
 import {
   Form,
   FormControl,
@@ -34,9 +29,14 @@ import {
   FormItem,
   FormLabel,
   FormFieldErrors,
-} from "~/components/form"
-import { Input } from "~/components/input"
-import { Textarea } from "~/components/textarea"
+} from "~/components/ui/form"
+import { Input } from "~/components/ui/input"
+import { Textarea } from "~/components/ui/textarea"
+import { SelectDisc } from "~/components/select/disc"
+import { MusicDiscFormItem } from "~/components/music-disc"
+import { Footer } from "~/components/footer"
+
+import discs from "~/lib/discs"
 
 import { version } from "../package.json"
 
@@ -47,6 +47,12 @@ const formSchema = z.object({
     description: z.string().min(1, "Description is required."),
     icon: z.instanceof(File),
   }),
+  music: z.array(
+    z.object({
+      name: z.string(),
+      file: z.instanceof(File).optional(),
+    })
+  ),
   config: z.object({
     mcpack: z.boolean(),
   }),
@@ -54,7 +60,7 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>
 
-const uriToFile = (uri: string) => {
+const uriToFile = (uri: string): File => {
   const arr = uri.split(",")
   const mime = arr[0]?.match(/:(.*?);/)?.[1]
   const bstr = atob(arr[1])
@@ -81,6 +87,8 @@ export default function App() {
   })
 
   const [packIconURL, setPackIconURL] = useState(pack_icon)
+
+  const musicDiscArray = useFieldArray({ control: form.control, name: "music" })
 
   const onSubmit = async (data: FormValues) => {
     new Audio(pop).play()
@@ -120,9 +128,12 @@ export default function App() {
       )
     )
 
-    // console.log(data.general.icon)
-
     zip.file("pack_icon.png", data.general.icon)
+
+    for (const disc of data.music) {
+      if (!disc.file) continue
+      zip.file(discs[disc.name as keyof typeof discs].sound, disc.file)
+    }
 
     const blob = await zip.generateAsync({ type: "blob" })
 
@@ -297,6 +308,60 @@ export default function App() {
                 </Card>
               )}
             />
+            <FormField
+              control={form.control}
+              name="music"
+              render={({ fieldState }) => (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Music Discs</CardTitle>
+                    <CardDescription>
+                      Minecraft only supports the <code>.ogg</code> audio format. If your
+                      music is not currently in this format, you can use{" "}
+                      <a href="https://audio.online-convert.com/convert-to-ogg">
+                        this converter.
+                      </a>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex gap-10 flex-col h-full">
+                    <SelectDisc
+                      onChange={(value) =>
+                        musicDiscArray.append({
+                          name: value,
+                          file: undefined,
+                        })
+                      }
+                    />
+                    {musicDiscArray.fields.length > 0 && (
+                      <div className="flex flex-col gap-2 sm:gap-4">
+                        {musicDiscArray.fields.map((fieldArray, index) => {
+                          return (
+                            <FormField
+                              control={form.control}
+                              name={`music.${index}.file`}
+                              key={fieldArray.id}
+                              render={({ field }) => (
+                                <MusicDiscFormItem
+                                  field={field}
+                                  musicDiscArray={musicDiscArray}
+                                  discName={fieldArray.name}
+                                  index={index}
+                                />
+                              )}
+                            ></FormField>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </CardContent>
+                  {fieldState.error && (
+                    <CardFooter>
+                      <FormFieldErrors form={form} />
+                    </CardFooter>
+                  )}
+                </Card>
+              )}
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Export</CardTitle>
@@ -317,53 +382,7 @@ export default function App() {
           </form>
         </Form>
       </main>
-      <footer className="bg-card py-8 md:py-12 border-t-2">
-        <div className="relative container mx-auto">
-          <div className="flex flex-col gap-2 text-balance">
-            <h4 className="text-2xl leading-none font-serif-heading text-foreground">
-              Thanks for using my app!
-            </h4>
-            <p className="text-lg text-muted-foreground leading-tight">
-              You can find more cool stuff like this on my{" "}
-              <a
-                href="https://charliee.dev"
-                className="underline underline-offset-4"
-              >
-                portfolio page.
-              </a>
-              <br className="max-sm:hidden" />
-              <span className="sm:hidden"> </span>
-              If you can spare some change,{" "}
-              <a
-                href="https://www.buymeacoffee.com/notcharliee"
-                className="underline underline-offset-4"
-              >
-                buy me a coffee!
-              </a>
-            </p>
-          </div>
-          <button
-            className="size-[109px] absolute -top-8 right-8 rotate-12 hidden min-[700px]:block group"
-            onClick={() => {
-              const arr = [new Audio(pollinate1), new Audio(pollinate2)]
-              const sfx = arr[Math.floor(Math.random() * arr.length)]
-
-              sfx.play()
-            }}
-          >
-            <img
-              src={particles}
-              draggable={false}
-              className="w-2/3 absolute right-0 top-0"
-            />
-            <img
-              src={bee}
-              draggable={false}
-              className="w-2/3 absolute left-0 bottom-0 group-active:animate-bzz"
-            />
-          </button>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }

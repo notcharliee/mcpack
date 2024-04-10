@@ -160,7 +160,7 @@ const FormFieldErrors = ({ form }: { form: UseFormReturn<FormValues> }) => {
 
   const errors = form.formState.errors[name]!
 
-  const object = form.getValues()[name]
+  const object = form.getValues()[name] ?? {}
   const objectKeys = Object.keys(object)
 
   return objectKeys.map((key, index) => {
@@ -178,7 +178,6 @@ const FormFieldErrors = ({ form }: { form: UseFormReturn<FormValues> }) => {
 }
 
 export {
-  useFormField,
   Form,
   FormItem,
   FormControl,

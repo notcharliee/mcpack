@@ -7,6 +7,14 @@
     @apply border-border;
   }
 
+  a {
+    @apply underline underline-offset-4
+  }
+
+  code {
+    @apply text-foreground border-2 bg-background relative mx-[0.2ch] px-[0.4rem] py-[0.2rem] font-serif-heading text-sm leading-none
+  }
+
   @font-face {
     font-family: "MinecraftSeven";
     src: url("https://raw.githubusercontent.com/Mojang/web-theme-bootstrap/main/assets/fonts/Minecraft-Seven_v2.woff")

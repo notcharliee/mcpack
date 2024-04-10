@@ -171,7 +171,7 @@ const MusicDiscFormItem = ({
             className="max-sm:w-full max-sm:text-center"
             asChild
           >
-            <FormLabel>Upload Music</FormLabel>
+            <FormLabel className="cursor-pointer">Upload Music</FormLabel>
           </Button>
         </>
       )}

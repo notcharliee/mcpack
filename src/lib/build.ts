@@ -24,14 +24,14 @@ export const buildPack = async (data: FormValues) => {
           min_engine_version: [1, 20, 0],
           name: data.general.name,
           uuid: randomUUID(),
-          version: [1, 0, 0],
+          version: data.export.version,
         },
         modules: [
           {
             description: data.general.description,
             type: "resources",
             uuid: randomUUID(),
-            version: [1, 0, 0],
+            version: data.export.version,
           },
         ],
         metadata: {
@@ -61,7 +61,7 @@ export const buildPack = async (data: FormValues) => {
 
   link.href = url
   link.download = `${data.general.name.replaceAll(" ", "-")}.${
-    data.config.mcpack ? "mcpack" : "zip"
+    data.export.mcpack ? "mcpack" : "zip"
   }`
 
   document.body.appendChild(link).click()

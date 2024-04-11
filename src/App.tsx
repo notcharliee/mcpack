@@ -32,8 +32,10 @@ const formSchema = z.object({
       file: z.instanceof(File).optional(),
     })
   ),
-  config: z.object({
+  export: z.object({
     mcpack: z.boolean(),
+    version: z.array(z.number()).length(3, "Invalid pack version."),
+    engine_version: z.array(z.number()).length(3, "Invalid pack version."),
   }),
 })
 
@@ -50,8 +52,11 @@ export default function App() {
         description: "",
         icon: uriToFile(pack_icon),
       },
-      config: {
+      music: [],
+      export: {
         mcpack: false,
+        version: [1, 0, 0],
+        engine_version: [1, 20, 0]
       },
     },
   })

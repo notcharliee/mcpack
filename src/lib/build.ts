@@ -21,7 +21,7 @@ export const buildPack = async (data: FormValues) => {
         format_version: 2,
         header: {
           description: data.general.description,
-          min_engine_version: [1, 20, 0],
+          min_engine_version: data.export.engine_version,
           name: data.general.name,
           uuid: randomUUID(),
           version: data.export.version,

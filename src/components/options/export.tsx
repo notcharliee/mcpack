@@ -18,6 +18,23 @@ import { Input } from "~/components/ui/input"
 import { type FormReturn } from "~/App"
 
 export const ExportOptions = ({ form }: { form: FormReturn }) => {
+  const versionOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldOnChange: (...event: unknown[]) => void
+  ) => {
+    let newValue = event.target.value.split(".")
+
+    if (newValue.length > 3) {
+      newValue = newValue.slice(0, 3)
+    }
+
+    fieldOnChange(newValue)
+  }
+
+  const versionOnBlur = (event: React.FocusEvent<HTMLInputElement, Element>, fieldOnChange: (...event: unknown[]) => void) => {
+    fieldOnChange(event.target.value.split(".").map(v => Number(v)))
+  }
+
   return (
     <FormField
       control={form.control}
@@ -37,15 +54,15 @@ export const ExportOptions = ({ form }: { form: FormReturn }) => {
                 control={form.control}
                 name="export.version"
                 render={({
-                  field: { disabled, name, onBlur, onChange, ref, value },
+                  field: { disabled, name, onChange, ref, value },
                 }) => (
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
                         disabled={disabled}
                         name={name}
-                        onBlur={onBlur}
-                        onChange={(e) => onChange(e.target.value.split("."))}
+                        onBlur={(e) => versionOnBlur(e, onChange)}
+                        onChange={(e) => versionOnChange(e, onChange)}
                         ref={ref}
                         value={value.join(".")}
                         placeholder="Pack version:"
@@ -60,15 +77,15 @@ export const ExportOptions = ({ form }: { form: FormReturn }) => {
                 control={form.control}
                 name="export.engine_version"
                 render={({
-                  field: { disabled, name, onBlur, onChange, ref, value },
+                  field: { disabled, name, onChange, ref, value },
                 }) => (
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
                         disabled={disabled}
                         name={name}
-                        onBlur={onBlur}
-                        onChange={(e) => onChange(e.target.value.split("."))}
+                        onBlur={(e) => versionOnBlur(e, onChange)}
+                        onChange={(e) => versionOnChange(e, onChange)}
                         ref={ref}
                         value={value.join(".")}
                         placeholder="Engine version:"

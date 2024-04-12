@@ -1,3 +1,5 @@
+import chest_open from "~/assets/audio/chest_open.ogg"
+
 import { useRef } from "react"
 import {
   type ControllerRenderProps,
@@ -116,6 +118,7 @@ const MusicDiscFormItem = ({
       }s`
 
       audioDurationElement.current!.textContent = audioDuration
+      audio.remove()
     })
   }
 
@@ -163,6 +166,13 @@ const MusicDiscFormItem = ({
               type="file"
               accept="audio/ogg"
               onChange={(event) => field.onChange(event.target!.files![0])}
+              onClick={() => {
+                setTimeout(() => {
+                  const audio = new Audio(chest_open)
+                  audio.play()
+                  audio.remove()
+                }, 150)
+              }}
             />
           </FormControl>
           <Button

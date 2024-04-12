@@ -63,13 +63,15 @@ export default function App() {
 
   return (
     <>
-      <Header />
+      <Header form={form} />
       <main>
         <FormProvider {...form}>
           <form
             className="space-y-8 sm:space-y-10 py-8 md:py-12 container mx-auto"
             onSubmit={form.handleSubmit(buildPack, () => {
-              new Audio(bass).play()
+              const audio = new Audio(bass)
+              audio.play()
+              audio.remove()
             })}
           >
             {Object.values(FormOptions).map((FormOption, index) => (

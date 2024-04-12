@@ -29,6 +29,7 @@ export const Footer = () => (
           const sfx = arr[Math.floor(Math.random() * arr.length)]
 
           sfx.play()
+          arr.forEach((el) => el.remove())
         }}
       >
         <img

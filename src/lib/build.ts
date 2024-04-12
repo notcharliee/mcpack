@@ -10,7 +10,9 @@ import discs from "~/lib/discs"
 import type { FormValues } from "~/App"
 
 export const buildPack = async (data: FormValues) => {
-  new Audio(pop).play()
+  const audio = new Audio(pop)
+  audio.play()
+  audio.remove()
 
   const zip = new JSZip()
 

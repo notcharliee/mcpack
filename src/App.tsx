@@ -12,9 +12,7 @@ import { z } from "zod"
 import { Footer } from "~/components/footer"
 import { Header } from "~/components/header"
 
-import { GeneralOptions } from "~/components/options/general"
-import { MusicOptions } from "~/components/options/music"
-import { ExportOptions } from "~/components/options/export"
+import { FormOptions } from "~/components/options"
 
 import { buildPack } from "~/lib/build"
 import { uriToFile } from "~/lib/utils"
@@ -56,7 +54,7 @@ export default function App() {
       export: {
         mcpack: false,
         version: [1, 0, 0],
-        engine_version: [1, 20, 0]
+        engine_version: [1, 20, 0],
       },
     },
   })
@@ -74,9 +72,9 @@ export default function App() {
               new Audio(bass).play()
             })}
           >
-            <GeneralOptions form={form} />
-            <MusicOptions form={form} />
-            <ExportOptions form={form} />
+            {Object.values(FormOptions).map((FormOption, index) => (
+              <FormOption form={form} key={index} />
+            ))}
           </form>
         </FormProvider>
       </main>
